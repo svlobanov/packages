@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xfsprogs
 PKG_VERSION:=5.9.0
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/utils/fs/xfs/xfsprogs
@@ -52,6 +52,9 @@ define Package/xfs-growfs
 $(call Package/xfsprogs/default)
   TITLE:=Utility for increasing the size of XFS filesystems
 endef
+
+CONFIGURE_VARS += \
+	BUILD_CFLAGS="-I$(TOOLCHAIN_DIR)/include"
 
 CONFIGURE_ARGS += \
 	--disable-gettext \

@@ -53,8 +53,12 @@ $(call Package/xfsprogs/default)
   TITLE:=Utility for increasing the size of XFS filesystems
 endef
 
+ifeq ($(CONFIG_HOST_OS_MACOS),y)
 CONFIGURE_VARS += \
-	BUILD_CFLAGS="-I$(TOOLCHAIN_DIR)/include"
+	BUILD_CFLAGS="-I$(PKG_BUILD_DIR)/libfrog/macos_compat"
+#	BUILD_CFLAGS="-I$(TOOLCHAIN_DIR)/include"
+
+endif
 
 CONFIGURE_ARGS += \
 	--disable-gettext \

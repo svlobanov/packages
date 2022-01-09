@@ -46,7 +46,7 @@ endef
 
 define Package/erlang
 $(call Package/erlang/Default)
-  DEPENDS+= +libncurses +librt +zlib
+  DEPENDS+= +libncurses +librt +zlib +libstdcpp
   PROVIDES:= erlang-erts=12.2 erlang-kernel=8.2 erlang-sasl=4.1.1 erlang-stdlib=3.17
 endef
 
@@ -297,8 +297,14 @@ $(call Package/erlang/Default/description)
 endef
 
 # Host
+# host-compile is done with LibreSSL provided by OpenWrt tools/libressl
+
+HOST_CFLAGS += \
+        -DHAS_EVP_PKEY_CTX \
+        -DHAVE_EVP_CIPHER_CTX_COPY
 
 HOST_CONFIGURE_ARGS += \
+	--with-ssl="$(STAGING_DIR_HOST)" \
 	--disable-hipe \
 	--disable-pgo \
 	--disable-smp-support \

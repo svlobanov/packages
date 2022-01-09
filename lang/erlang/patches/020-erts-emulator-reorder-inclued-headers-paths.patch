@@ -1,3 +1,28 @@
+From 85a3e5b4f65e5284e59dcdd90e92ea7d50ef6907 Mon Sep 17 00:00:00 2001
+From: Romain Naour <romain.naour@openwide.fr>
+Date: Sun, 8 Feb 2015 17:23:13 +0100
+Subject: [PATCH] erts/emulator: reorder inclued headers paths
+
+If the Perl Compatible Regular Expressions is installed on the
+host and the path to the headers is added to the CFLAGS, the
+pcre.h from the host is used instead of the one provided by
+erlang.
+
+Erlang use an old version of this file which is incompatible
+with the upstream one.
+
+Move INCLUDES before CFLAGS to use pcre.h from erlang.
+
+http://autobuild.buildroot.net/results/cbd/cbd8b54eef535f19d7d400fd269af1b3571d6143/build-end.log
+
+Signed-off-by: Romain Naour <romain.naour@openwide.fr>
+[Bernd: rebased for erlang-21.0]
+Signed-off-by: Bernd Kuhls <bernd.kuhls@t-online.de>
+[svlobanov: updated for erlang-24.2]
+---
+ erts/emulator/Makefile.in | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
 --- a/erts/emulator/Makefile.in
 +++ b/erts/emulator/Makefile.in
 @@ -800,7 +800,7 @@ endif

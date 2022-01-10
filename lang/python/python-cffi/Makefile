@@ -38,6 +38,15 @@ define Package/python3-cffi/description
 Foreign Function Interface for Python calling C code.
 endef
 
+define Build/Prepare
+	$(call Build/Prepare/Default)
+ifeq ($(CONFIG_HOST_OS_MACOS),y)
+#Disable darwin dection on cross-compiling
+	sed -i "s/darwin/fakedarwin/g" $(PKG_BUILD_DIR)/setup.py
+	sed -i "s/darwin/fakedarwin/g" $(PKG_BUILD_DIR)/cffi/recompiler.py
+endif
+endef
+
 $(eval $(call Py3Package,python3-cffi))
 $(eval $(call BuildPackage,python3-cffi))
 $(eval $(call BuildPackage,python3-cffi-src))

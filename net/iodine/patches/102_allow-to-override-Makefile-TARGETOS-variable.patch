@@ -1,0 +1,24 @@
+From 54a519468324d2d9304d1d4271ac3ce685504266 Mon Sep 17 00:00:00 2001
+From: "Sergey V. Lobanov" <sergey@lobanov.in>
+Date: Tue, 11 Jan 2022 12:00:08 +0300
+Subject: [PATCH] allow to override Makefile TARGETOS variable
+
+Overriding TARGETOS is useful for cross-compiling if build OS and
+target OS are different (e.g. build on MacOS for Linux)
+
+Signed-off-by: Sergey V. Lobanov <sergey@lobanov.in>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/Makefile
++++ b/Makefile
+@@ -14,7 +14,7 @@ MKDIR_FLAGS=-p
+ RM=rm
+ RM_FLAGS=-f
+ 
+-TARGETOS = `uname`
++TARGETOS ?= `uname`
+ 
+ all:
+ 	@(cd src; $(MAKE) TARGETOS=$(TARGETOS) all)

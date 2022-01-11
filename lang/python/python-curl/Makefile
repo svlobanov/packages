@@ -32,6 +32,16 @@ define Package/python3-curl/description
 PycURL is a Python interface to libcurl, the multiprotocol file transfer library.
 endef
 
+define Build/Prepare
+	$(call Build/Prepare/Default)
+
+ifeq ($(CONFIG_HOST_OS_MACOS),y)
+	#Disable darwin detection. It is not required on cross-compile build with Linux target
+	sed -i 's/darwin/fakevalue/g' $(PKG_BUILD_DIR)/setup.py
+endif
+
+endef
+
 PYTHON3_PKG_SETUP_ARGS:=
 
 ifdef CONFIG_LIBCURL_OPENSSL

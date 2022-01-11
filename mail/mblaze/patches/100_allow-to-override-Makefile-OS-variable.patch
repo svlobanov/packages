@@ -1,0 +1,24 @@
+From b6bc4f3c748abac693cb0d1e865548949d2b0ff4 Mon Sep 17 00:00:00 2001
+From: "Sergey V. Lobanov" <sergey@lobanov.in>
+Date: Tue, 11 Jan 2022 13:34:03 +0300
+Subject: [PATCH] allow to override Makefile OS variable
+
+Overriding OS is useful for cross-compiling if build OS and
+target OS are different (e.g. build on MacOS for Linux)
+
+Signed-off-by: Sergey V. Lobanov <sergey@lobanov.in>
+---
+ GNUmakefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/GNUmakefile
++++ b/GNUmakefile
+@@ -2,7 +2,7 @@ CFLAGS?=-g -O2 -fstack-protector-strong
+ override CFLAGS:=-Wall -Wno-switch -Wextra $(CFLAGS)
+ LDLIBS=-lrt
+ 
+-OS := $(shell uname)
++OS ?= $(shell uname)
+ 
+ ifeq ($(OS),OpenBSD)
+ LOCALBASE=/usr/local

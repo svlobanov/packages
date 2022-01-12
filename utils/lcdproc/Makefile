@@ -109,6 +109,9 @@ This package contains display drivers with external dependencies:
 $(LCDPROC_OTHER_DRIVERS_TEXT)
 endef
 
+CONFIGURE_VARS += \
+	ac_cv_mtab_file="/etc/mtab"
+
 CONFIGURE_ARGS += \
 	--disable-libX11 \
 	--disable-libhid \

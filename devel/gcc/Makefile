@@ -105,11 +105,11 @@ $(eval $(call Download,mpfr))
 define Build/Prepare
 	$(PKG_UNPACK)
 # 	we have to download and unpack additional stuff before patching
-	tar -C $(PKG_BUILD_DIR) -xvjf $(DL_DIR)/$(GMPSRC).tar.xz
+	tar -C $(PKG_BUILD_DIR) -xvJf $(DL_DIR)/$(GMPSRC).tar.xz
 	ln -sf $(PKG_BUILD_DIR)/$(GMPSRC) $(PKG_BUILD_DIR)/gmp
 	tar -C $(PKG_BUILD_DIR) -xvzf $(DL_DIR)/$(MPCSRC).tar.gz
 	ln -sf $(PKG_BUILD_DIR)/$(MPCSRC) $(PKG_BUILD_DIR)/mpc
-	tar -C $(PKG_BUILD_DIR) -xvjf $(DL_DIR)/$(MPFRSRC).tar.xz
+	tar -C $(PKG_BUILD_DIR) -xvJf $(DL_DIR)/$(MPFRSRC).tar.xz
 	ln -sf $(PKG_BUILD_DIR)/$(MPFRSRC) $(PKG_BUILD_DIR)/mpfr
 	$(Build/Patch)
 #	poor man's fix for `none-openwrt-linux' not recognized when building with musl

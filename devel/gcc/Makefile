@@ -80,7 +80,7 @@ GMPSRC=gmp-6.2.1
 define Download/gmp
   URL:=@GNU/gmp
   FILE:=$(GMPSRC).tar.xz
-  HASH:=498449a994efeba527885c10405993427995d3f86b8768d8cdf8d9dd7c6b73e8
+  HASH:=fd4829912cddd12f84181c3451cc752be224643e87fac497b69edddadc49b4f2
 endef
 $(eval $(call Download,gmp))
 

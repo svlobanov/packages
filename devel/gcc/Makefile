@@ -22,23 +22,17 @@ define Package/gcc
 endef
 
 PKG_NAME:=gcc
-# PKG_VERSION=7.3.0
-PKG_VERSION=7.4.0
-PKG_RELEASE:=7
+PKG_VERSION=11.2.0
+PKG_RELEASE:=1
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+PKG_SOURCE:=gcc-$(PKG_VERSION).tar.xz
 PKG_INSTALL:=1
 PKG_FIXUP:=libtool
 PKG_BUILD_PARALLEL:=1
 
 PKG_CPE_ID:=cpe:/a:gnu:gcc
 
-ifeq ($(PKG_VERSION),7.3.0)
-	PKG_HASH:=832ca6ae04636adbb430e865a1451adf6979ab44ca1c8374f61fba65645ce15c
-endif
-ifeq ($(PKG_VERSION),7.4.0)
-	PKG_HASH:=eddde28d04f334aec1604456e536416549e9b1aa137fc69204e65eb0c009fe51
-endif
+PKG_HASH:=d08edc536b54c372a1010ff6619dd274c0f1603aa49212ba20f7aa2cda36fa8b
 
 
 define Package/gcc/config
@@ -81,37 +75,37 @@ ifneq ($(CONFIG_SOFT_FLOAT),y)
 		ARM_FLOAT_OPTION:= --with-float=hard
 	endif
 endif
-GMPSRC=gmp-6.1.0
+GMPSRC=gmp-6.2.1
 
 define Download/gmp
-  URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
-  FILE:=$(GMPSRC).tar.bz2
-  HASH:=498449a994efeba527885c10405993427995d3f86b8768d8cdf8d9dd7c6b73e8
+  URL:=@GNU/gmp
+  FILE:=$(GMPSRC).tar.xz
+  HASH:=fd4829912cddd12f84181c3451cc752be224643e87fac497b69edddadc49b4f2
 endef
 $(eval $(call Download,gmp))
 
-MPCSRC=mpc-1.0.3
+MPCSRC=mpc-1.2.1
 
 define Download/mpc
-  URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
+  URL:=@GNU/mpc
   FILE:=$(MPCSRC).tar.gz
-  HASH:=617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3
+  HASH:=17503d2c395dfcf106b622dc142683c1199431d095367c6aacba6eec30340459
 endef
 $(eval $(call Download,mpc))
 
-MPFRSRC=mpfr-3.1.4
+MPFRSRC=mpfr-4.1.0
 
 define Download/mpfr
-  URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
+  URL:=@GNU/mpfr http://www.mpfr.org/mpfr-$(MPFRSRC)
   FILE:=$(MPFRSRC).tar.bz2
-  HASH:=d3103a80cdad2407ed581f3618c4bed04e0c92d1cf771a65ead662cc397f7775
+  HASH:=feced2d430dd5a97805fa289fed3fc8ff2b094c02d05287fd6133e7f1f0ec926
 endef
 $(eval $(call Download,mpfr))
 
 define Build/Prepare
 	$(PKG_UNPACK)
 # 	we have to download and unpack additional stuff before patching
-	tar -C $(PKG_BUILD_DIR) -xvjf $(DL_DIR)/$(GMPSRC).tar.bz2
+	tar -C $(PKG_BUILD_DIR) -xvJf $(DL_DIR)/$(GMPSRC).tar.xz
 	ln -sf $(PKG_BUILD_DIR)/$(GMPSRC) $(PKG_BUILD_DIR)/gmp
 	tar -C $(PKG_BUILD_DIR) -xvzf $(DL_DIR)/$(MPCSRC).tar.gz
 	ln -sf $(PKG_BUILD_DIR)/$(MPCSRC) $(PKG_BUILD_DIR)/mpc
@@ -121,7 +115,6 @@ define Build/Prepare
 #	poor man's fix for `none-openwrt-linux' not recognized when building with musl
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/mpfr/
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/gmp/
-	chmod u+w $(PKG_BUILD_DIR)/mpc/config.sub
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/mpc/
 endef
 
@@ -133,6 +126,7 @@ define Build/Configure
 		$(TARGET_CONFIGURE_OPTS) \
 		$(PKG_BUILD_DIR)/configure \
 			$(CONFIGURE_ARGS) \
+			--enable-bootstrap \
 			--build=$(GNU_HOST_NAME) \
 			--host=$(REAL_GNU_TARGET_NAME) \
 			--target=$(REAL_GNU_TARGET_NAME) \
@@ -156,11 +150,9 @@ define Build/Configure
 			--disable-libssp \
 			--disable-decimal-float \
 			--disable-libstdcxx-pch \
-			--with-host-libstdcxx=-lstdc++ \
 			--prefix=/usr \
 			--libexecdir=/usr/lib \
 			--with-local-prefix=/usr \
-			--with-stage1-ldflags=-lstdc++ \
 			$(ARM_FLOAT_OPTION) \
 			$(SOFT_FLOAT_CONFIG_OPTION) \
 			$(call qstrip,$(CONFIG_EXTRA_GCC_CONFIG_OPTIONS)) \

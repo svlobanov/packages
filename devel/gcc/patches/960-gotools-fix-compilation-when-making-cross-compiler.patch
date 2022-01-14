@@ -34,33 +34,34 @@ at gcc pass3
 +libgccdir = ../$(target_noncanonical)/libgcc
  LIBGODEP = $(libgodir)/libgo.la
  
- if NATIVE
-@@ -38,7 +39,8 @@ endif
- GOCFLAGS = $(CFLAGS_FOR_TARGET)
+ LIBGOTOOL = $(libgodir)/libgotool.a
+@@ -41,7 +42,8 @@ GOCFLAGS = $(CFLAGS_FOR_TARGET)
  GOCOMPILE = $(GOCOMPILER) $(GOCFLAGS)
  
+ AM_GOCFLAGS = -I $(libgodir)
 -AM_LDFLAGS = -L $(libgodir) -L $(libgodir)/.libs
 +AM_LDFLAGS = -L $(libgodir) -L $(libgodir)/.libs \
 +	-L $(libgccdir) -L $(libgccdir)/.libs -lgcc_s
  GOLINK = $(GOCOMPILER) $(GOCFLAGS) $(AM_GOCFLAGS) $(LDFLAGS) $(AM_LDFLAGS) -o $@
  
- cmdsrcdir = $(srcdir)/../libgo/go/cmd
+ libgosrcdir = $(srcdir)/../libgo/go
 --- a/gotools/Makefile.in
 +++ b/gotools/Makefile.in
-@@ -252,13 +252,15 @@ mkinstalldirs = $(SHELL) $(toplevel_srcd
+@@ -337,6 +337,7 @@ mkinstalldirs = $(SHELL) $(toplevel_srcd
  PWD_COMMAND = $${PWDCMD-pwd}
  STAMP = echo timestamp >
  libgodir = ../$(target_noncanonical)/libgo
 +libgccdir = ../$(target_noncanonical)/libgcc
  LIBGODEP = $(libgodir)/libgo.la
+ LIBGOTOOL = $(libgodir)/libgotool.a
  @NATIVE_FALSE@GOCOMPILER = $(GOC)
- 
- # Use the compiler we just built.
- @NATIVE_TRUE@GOCOMPILER = $(GOC_FOR_TARGET) $(XGCC_FLAGS_FOR_TARGET)
+@@ -346,7 +347,8 @@ LIBGOTOOL = $(libgodir)/libgotool.a
+ GOCFLAGS = $(CFLAGS_FOR_TARGET)
  GOCOMPILE = $(GOCOMPILER) $(GOCFLAGS)
+ AM_GOCFLAGS = -I $(libgodir)
 -AM_LDFLAGS = -L $(libgodir) -L $(libgodir)/.libs
 +AM_LDFLAGS = -L $(libgodir) -L $(libgodir)/.libs \
 +	-L $(libgccdir) -L $(libgccdir)/.libs -lgcc_s
  GOLINK = $(GOCOMPILER) $(GOCFLAGS) $(AM_GOCFLAGS) $(LDFLAGS) $(AM_LDFLAGS) -o $@
- cmdsrcdir = $(srcdir)/../libgo/go/cmd
- go_cmd_go_files = \
+ libgosrcdir = $(srcdir)/../libgo/go
+ cmdsrcdir = $(libgosrcdir)/cmd

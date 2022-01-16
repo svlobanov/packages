@@ -140,7 +140,7 @@ endef
 HOST_CFLAGS += -std=c99
 TARGET_CFLAGS += $(FPIC) -DNO_IP_OPTIONS -D_FILE_OFFSET_BITS=64
 
-MAKE_VARS += build=Linux-$$(ARCH)
+MAKE_VARS += build=Linux-$$(ARCH) EXIM_OSTYPE="Linux"
 MAKE_FLAGS += AR="$$(TARGET_AR) r"
 HOST_MAKE_VARS += build=Linux-$$(ARCH)
 
@@ -247,8 +247,27 @@ endif
 	$(SED) 's%# CFLAGS_DYNAMIC=-shared -rdynamic -fPIC%CFLAGS_DYNAMIC=-shared -rdynamic $(FPIC)%' $(PKG_BUILD_DIR)/Local/Makefile
 	$(SED) 's%# LOOKUP_MODULE_DIR=/usr/lib/exim/lookups/%LOOKUP_MODULE_DIR=/usr/lib/exim/lookups/%' $(PKG_BUILD_DIR)/Local/Makefile
 	$(SED) 's%#DLOPEN_LOCAL_SCAN=yes%DLOPEN_LOCAL_SCAN=yes%' $(PKG_BUILD_DIR)/Local/Makefile
+
+	$(CP) $(PKG_BUILD_DIR)/OS/unsupported/Makefile-Darwin $(PKG_BUILD_DIR)/OS/Makefile-Darwin
 	$(call Build/Compile/Default,makefile)
+
+	stat $(PKG_BUILD_DIR)/build-Linux-$(ARCH)/Makefile
+	$(CP) $(PKG_BUILD_DIR)/OS/unsupported/os.h-Darwin $(PKG_BUILD_DIR)/build-Linux-$(ARCH)/os.h
+	
+	$(HOST_MAKE_VARS) $(MAKE) $(HOST_MAKE_FLAGS) $(HOST_MAKE_VARS) -C $(PKG_BUILD_DIR)/build-Linux-$(ARCH) macro_predef
+	
+	
+	
+	
+#	adadasdasdas
+
+	$(CP) $(PKG_BUILD_DIR)/OS/Makefile-Linux $(PKG_BUILD_DIR)/OS/Makefile-Darwin
+	$(call Build/Compile/Default,makefile)
+	stat $(PKG_BUILD_DIR)/build-Linux-$(ARCH)/Makefile
+
 	$(CP) $(PKG_BUILD_DIR)/OS/os.h-Linux $(PKG_BUILD_DIR)/build-Linux-$(ARCH)/os.h
+
+
 	# overwrite types for cross-compile
 	# (is all the below true for glibc as well?)
 	echo '#include <inttypes.h>' >> $(PKG_BUILD_DIR)/build-Linux-$(ARCH)/os.h
@@ -260,8 +279,24 @@ endif
 	echo '#ifndef NS_MAXMSG' >> $(PKG_BUILD_DIR)/build-Linux-$(ARCH)/os.h
 	echo '#define NS_MAXMSG 65535' >> $(PKG_BUILD_DIR)/build-Linux-$(ARCH)/os.h
 	echo '#endif' >> $(PKG_BUILD_DIR)/build-Linux-$(ARCH)/os.h
+
+	#os.h
+	$(HOST_MAKE_VARS) $(MAKE) $(HOST_MAKE_FLAGS) $(HOST_MAKE_VARS) -C $(PKG_BUILD_DIR)/build-Linux-$(ARCH) -B os.h
+	#os.c
+	$(HOST_MAKE_VARS) $(MAKE) $(HOST_MAKE_FLAGS) $(HOST_MAKE_VARS) -C $(PKG_BUILD_DIR)/build-Linux-$(ARCH) -B os.c
+	#config.h
+	$(HOST_MAKE_VARS) $(MAKE) $(HOST_MAKE_FLAGS) $(HOST_MAKE_VARS) -C $(PKG_BUILD_DIR)/build-Linux-$(ARCH) -B config.h
+	#protect
+	$(HOST_MAKE_VARS) $(MAKE) $(HOST_MAKE_FLAGS) $(HOST_MAKE_VARS) -C $(PKG_BUILD_DIR)/build-Linux-$(ARCH) -t macro_predef
+
+	
 	$(HOST_MAKE_VARS) $(MAKE) $(HOST_MAKE_FLAGS) $(HOST_MAKE_VARS) -C $(PKG_BUILD_DIR)/build-Linux-$(ARCH) macro_predef
 endef
+
+#define Build/Compile
+#	$(call Build/Compile/Default)
+#endef
+
 
 define Package/exim/conffiles
 /etc/exim/

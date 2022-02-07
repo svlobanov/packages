@@ -2,7 +2,7 @@
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
-#
+# change for CI build
 
 include $(TOPDIR)/rules.mk
 
